@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-add-booking-reminder-marker
+      author: codex
+      changes:
+        - addColumn:
+            tableName: booking
+            columns:
+              - column:
+                  name: reminder_sent_at
+                  type: TIMESTAMP

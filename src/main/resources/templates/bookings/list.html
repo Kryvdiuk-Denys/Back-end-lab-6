@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bookings</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/bookings}">Coworking Booking</a>
+    <nav class="nav">
+        <a class="active" th:href="@{/bookings}">Bookings</a>
+        <a th:href="@{/workspaces}">Workspaces</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}">Admin</a>
+    </nav>
+    <form class="logout" th:action="@{/logout}" method="post">
+        <span sec:authentication="name"></span>
+        <button type="submit">Logout</button>
+    </form>
+</header>
+
+<main class="shell">
+    <section class="page-head">
+        <div>
+            <p class="eyebrow">Reservations</p>
+            <h1>Bookings</h1>
+        </div>
+        <a class="button primary" th:href="@{/bookings/new}">New booking</a>
+    </section>
+
+    <section class="table-wrap">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Workspace</th>
+                <th>Customer</th>
+                <th>Period</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th class="actions">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="booking : ${bookings}">
+                <td th:text="${booking.id}"></td>
+                <td th:text="${booking.workspaceName}"></td>
+                <td>
+                    <strong th:text="${booking.customerName}"></strong>
+                    <span class="muted" th:text="${booking.customerEmail}"></span>
+                </td>
+                <td>
+                    <span th:text="${#temporals.format(booking.startsAt, 'dd.MM.yyyy HH:mm')}"></span>
+                    <span class="muted" th:text="${#temporals.format(booking.endsAt, 'dd.MM.yyyy HH:mm')}"></span>
+                </td>
+                <td><span class="badge" th:text="${booking.status}"></span></td>
+                <td th:text="${booking.totalPrice}"></td>
+                <td class="actions">
+                    <a class="icon-link" sec:authorize="hasAnyRole('ADMIN','MANAGER')" th:href="@{/bookings/{id}/edit(id=${booking.id})}">Edit</a>
+                    <form sec:authorize="hasRole('ADMIN')" th:action="@{/bookings/{id}/delete(id=${booking.id})}" method="post">
+                        <button class="link danger" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(bookings)}">
+                <td colspan="7" class="empty">No bookings</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

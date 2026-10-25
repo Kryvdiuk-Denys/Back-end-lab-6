@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Workspaces</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/bookings}">Coworking Booking</a>
+    <nav class="nav">
+        <a th:href="@{/bookings}">Bookings</a>
+        <a class="active" th:href="@{/workspaces}">Workspaces</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin}">Admin</a>
+    </nav>
+    <form class="logout" th:action="@{/logout}" method="post">
+        <span sec:authentication="name"></span>
+        <button type="submit">Logout</button>
+    </form>
+</header>
+
+<main class="shell">
+    <section class="page-head">
+        <div>
+            <p class="eyebrow">Inventory</p>
+            <h1>Workspaces</h1>
+        </div>
+        <a class="button primary" sec:authorize="hasAnyRole('ADMIN','MANAGER')" th:href="@{/workspaces/new}">New workspace</a>
+    </section>
+
+    <section class="table-wrap">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Capacity</th>
+                <th>Rate</th>
+                <th>Status</th>
+                <th class="actions">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="workspace : ${workspaces}" th:classappend="${!workspace.active} ? 'muted-row' : ''">
+                <td th:text="${workspace.id}"></td>
+                <td th:text="${workspace.name}"></td>
+                <td th:text="${workspace.type}"></td>
+                <td th:text="${workspace.capacity}"></td>
+                <td th:text="${workspace.hourlyRate}"></td>
+                <td><span class="badge" th:text="${workspace.active ? 'ACTIVE' : 'INACTIVE'}"></span></td>
+                <td class="actions">
+                    <a class="icon-link" sec:authorize="hasAnyRole('ADMIN','MANAGER')" th:href="@{/workspaces/{id}/edit(id=${workspace.id})}">Edit</a>
+                    <form sec:authorize="hasRole('ADMIN')" th:action="@{/workspaces/{id}/delete(id=${workspace.id})}" method="post">
+                        <button class="link danger" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(workspaces)}">
+                <td colspan="7" class="empty">No workspaces</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

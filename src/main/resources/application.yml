@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: coworking-booking
+
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+    overwrite-existing-jobs: true
+    wait-for-jobs-to-complete-on-shutdown: true
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: coworkingQuartzScheduler
+            instanceId: AUTO
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 4
+            threadPriority: 5
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 15000
+            misfireThreshold: 60000
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/coworking
+    username: coworking
+    password: coworking
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: coworking-ui
+            client-secret: ui-secret
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/coworking
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/coworking
+
+server:
+  port: 8080
+
+booking:
+  async:
+    core-pool-size: 4
+    max-pool-size: 4
+    queue-capacity: 50
+    thread-name-prefix: booking-async-
+    side-effect-delay-ms: 1000
+    lookup-delay-ms: 1000
+    preparation-timeout-ms: 2500
+
+logging:
+  level:
+    org.springframework.security: INFO

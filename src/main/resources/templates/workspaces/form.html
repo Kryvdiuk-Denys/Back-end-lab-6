@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title}">Workspace</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/bookings}">Coworking Booking</a>
+    <nav class="nav">
+        <a th:href="@{/bookings}">Bookings</a>
+        <a class="active" th:href="@{/workspaces}">Workspaces</a>
+    </nav>
+</header>
+
+<main class="shell narrow">
+    <section class="page-head">
+        <div>
+            <p class="eyebrow">Inventory</p>
+            <h1 th:text="${title}">Workspace</h1>
+        </div>
+        <a class="button secondary" th:href="@{/workspaces}">Back</a>
+    </section>
+
+    <form class="form-panel" th:action="${action}" th:object="${workspace}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <label>
+            Name
+            <input type="text" th:field="*{name}" required>
+            <small class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+        </label>
+
+        <label>
+            Type
+            <select th:field="*{type}" required>
+                <option value="DESK">DESK</option>
+                <option value="ROOM">ROOM</option>
+                <option value="STUDIO">STUDIO</option>
+                <option value="PRIVATE_OFFICE">PRIVATE_OFFICE</option>
+            </select>
+            <small class="field-error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></small>
+        </label>
+
+        <div class="grid-two">
+            <label>
+                Capacity
+                <input type="number" min="1" th:field="*{capacity}" required>
+                <small class="field-error" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></small>
+            </label>
+            <label>
+                Hourly rate
+                <input type="number" min="0.01" step="0.01" th:field="*{hourlyRate}" required>
+                <small class="field-error" th:if="${#fields.hasErrors('hourlyRate')}" th:errors="*{hourlyRate}"></small>
+            </label>
+        </div>
+
+        <label class="checkbox-row">
+            <input type="checkbox" th:field="*{active}">
+            Active
+        </label>
+
+        <div class="form-actions">
+            <button class="button primary" type="submit">Save</button>
+            <a class="button secondary" th:href="@{/workspaces}">Cancel</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

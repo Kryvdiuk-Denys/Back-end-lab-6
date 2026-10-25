@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/bookings}">Coworking Booking</a>
+    <nav class="nav">
+        <a th:href="@{/bookings}">Bookings</a>
+        <a th:href="@{/workspaces}">Workspaces</a>
+        <a class="active" th:href="@{/admin}">Admin</a>
+    </nav>
+    <form class="logout" th:action="@{/logout}" method="post">
+        <span sec:authentication="name"></span>
+        <button type="submit">Logout</button>
+    </form>
+</header>
+
+<main class="shell narrow">
+    <section class="page-head">
+        <div>
+            <p class="eyebrow">Security</p>
+            <h1>Admin area</h1>
+        </div>
+    </section>
+    <section class="status-panel">
+        <dl>
+            <div>
+                <dt>User</dt>
+                <dd sec:authentication="name"></dd>
+            </div>
+            <div>
+                <dt>Authorities</dt>
+                <dd sec:authentication="principal.authorities"></dd>
+            </div>
+        </dl>
+    </section>
+</main>
+</body>
+</html>

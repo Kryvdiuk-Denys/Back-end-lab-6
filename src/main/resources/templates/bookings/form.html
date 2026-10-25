@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title}">Booking</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/bookings}">Coworking Booking</a>
+    <nav class="nav">
+        <a class="active" th:href="@{/bookings}">Bookings</a>
+        <a th:href="@{/workspaces}">Workspaces</a>
+    </nav>
+</header>
+
+<main class="shell narrow">
+    <section class="page-head">
+        <div>
+            <p class="eyebrow">Reservation</p>
+            <h1 th:text="${title}">Booking</h1>
+        </div>
+        <a class="button secondary" th:href="@{/bookings}">Back</a>
+    </section>
+
+    <form class="form-panel" th:action="${action}" th:object="${booking}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="form-error" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <label>
+            Workspace
+            <select th:field="*{workspaceId}" required>
+                <option th:each="workspace : ${workspaces}"
+                        th:value="${workspace.id}"
+                        th:text="${workspace.name + ' / ' + workspace.type + ' / ' + workspace.hourlyRate}">
+                </option>
+            </select>
+            <small class="field-error" th:if="${#fields.hasErrors('workspaceId')}" th:errors="*{workspaceId}"></small>
+        </label>
+
+        <label>
+            Customer name
+            <input type="text" th:field="*{customerName}" required>
+            <small class="field-error" th:if="${#fields.hasErrors('customerName')}" th:errors="*{customerName}"></small>
+        </label>
+
+        <label>
+            Customer email
+            <input type="email" th:field="*{customerEmail}" required>
+            <small class="field-error" th:if="${#fields.hasErrors('customerEmail')}" th:errors="*{customerEmail}"></small>
+        </label>
+
+        <div class="grid-two">
+            <label>
+                Starts at
+                <input type="datetime-local" th:field="*{startsAt}" required>
+                <small class="field-error" th:if="${#fields.hasErrors('startsAt')}" th:errors="*{startsAt}"></small>
+            </label>
+            <label>
+                Ends at
+                <input type="datetime-local" th:field="*{endsAt}" required>
+                <small class="field-error" th:if="${#fields.hasErrors('endsAt')}" th:errors="*{endsAt}"></small>
+            </label>
+        </div>
+
+        <label>
+            Status
+            <select th:field="*{status}">
+                <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"></option>
+            </select>
+        </label>
+
+        <div class="form-actions">
+            <button class="button primary" type="submit">Save</button>
+            <a class="button secondary" th:href="@{/bookings}">Cancel</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

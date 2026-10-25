@@ -1,0 +1,202 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-workspace
+      author: codex
+      changes:
+        - createTable:
+            tableName: workspace
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_workspace
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_workspace_name
+              - column:
+                  name: type
+                  type: VARCHAR(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: capacity
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: hourly_rate
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 002-create-booking
+      author: codex
+      changes:
+        - createTable:
+            tableName: booking
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_booking
+                    nullable: false
+              - column:
+                  name: workspace_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_name
+                  type: VARCHAR(120)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_email
+                  type: VARCHAR(160)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: starts_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ends_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  defaultValue: CONFIRMED
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_price
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: booking
+            baseColumnNames: workspace_id
+            referencedTableName: workspace
+            referencedColumnNames: id
+            constraintName: fk_booking_workspace
+        - createIndex:
+            tableName: booking
+            indexName: ix_booking_workspace_id
+            columns:
+              - column:
+                  name: workspace_id
+        - createIndex:
+            tableName: booking
+            indexName: ix_booking_starts_at
+            columns:
+              - column:
+                  name: starts_at
+
+  - changeSet:
+      id: 003-seed-workspaces
+      author: codex
+      changes:
+        - insert:
+            tableName: workspace
+            columns:
+              - column:
+                  name: name
+                  value: Focus Desk A1
+              - column:
+                  name: type
+                  value: DESK
+              - column:
+                  name: capacity
+                  valueNumeric: 1
+              - column:
+                  name: hourly_rate
+                  valueNumeric: 120.00
+              - column:
+                  name: active
+                  valueBoolean: true
+        - insert:
+            tableName: workspace
+            columns:
+              - column:
+                  name: name
+                  value: Meeting Room Blue
+              - column:
+                  name: type
+                  value: ROOM
+              - column:
+                  name: capacity
+                  valueNumeric: 6
+              - column:
+                  name: hourly_rate
+                  valueNumeric: 450.00
+              - column:
+                  name: active
+                  valueBoolean: true
+        - insert:
+            tableName: workspace
+            columns:
+              - column:
+                  name: name
+                  value: Podcast Studio
+              - column:
+                  name: type
+                  value: STUDIO
+              - column:
+                  name: capacity
+                  valueNumeric: 3
+              - column:
+                  name: hourly_rate
+                  valueNumeric: 700.00
+              - column:
+                  name: active
+                  valueBoolean: true
+
+  - changeSet:
+      id: 004-seed-booking
+      author: codex
+      changes:
+        - insert:
+            tableName: booking
+            columns:
+              - column:
+                  name: workspace_id
+                  valueNumeric: 1
+              - column:
+                  name: customer_name
+                  value: Demo User
+              - column:
+                  name: customer_email
+                  value: demo@coworking.local
+              - column:
+                  name: starts_at
+                  valueDate: 2026-09-18T10:00:00
+              - column:
+                  name: ends_at
+                  valueDate: 2026-09-18T12:00:00
+              - column:
+                  name: status
+                  value: CONFIRMED
+              - column:
+                  name: total_price
+                  valueNumeric: 240.00
